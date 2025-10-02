@@ -234,16 +234,15 @@ const socialLinks = [
 <script>
   // Form handling
   document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('contactForm');
+    const form = document.getElementById('contactForm') as HTMLFormElement | null;
 
     form?.addEventListener('submit', async function(e) {
       e.preventDefault();
 
       const formData = new FormData(form);
-      const data = Object.fromEntries(formData.entries());
 
       // Show loading state
-      const submitButton = form.querySelector('button[type="submit"]');
+      const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement | null;
       const originalText = submitButton?.textContent;
       if (submitButton) {
         submitButton.textContent = 'Enviando...';

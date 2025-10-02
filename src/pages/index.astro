@@ -27,12 +27,12 @@ import Footer from '../components/ui/Footer.astro';
     const anchorLinks = document.querySelectorAll('a[href^="#"]');
 
     anchorLinks.forEach(link => {
-      link.addEventListener('click', function(e) {
+      link.addEventListener('click', function(this: HTMLAnchorElement, e) {
         e.preventDefault();
 
         const targetId = this.getAttribute('href');
         if (targetId && targetId !== '#') {
-          const targetSection = document.querySelector(targetId);
+          const targetSection = document.querySelector(targetId) as HTMLElement | null;
 
           if (targetSection) {
             const offsetTop = targetSection.offsetTop - 80; // Account for fixed navbar
