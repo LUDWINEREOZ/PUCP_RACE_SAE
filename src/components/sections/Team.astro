@@ -1,126 +1,181 @@
 ---
-const teamMembers = [
+
+import { Image } from 'astro:assets';
+
+//executive
+import miryamMateoPhoto from '../../assets/images/team/executive/Business Director_Miryam_Mateo.jpg';
+import alvaroCarrascoPhoto from '../../assets/images/team/executive/Electrical Director_Alvaro_Carrasco.png';
+import nayeliMunozPhoto from '../../assets/images/team/executive/Human Resources_Nayeli_Muñoz.png';
+import xiomaraChoquePhoto from '../../assets/images/team/executive/Mechanical Director_Xiomara_Choque.jpeg';
+import andreaShocushPhoto from '../../assets/images/team/executive/Operations Director_Andrea_Shocush.jpg';
+import cesarRomeroPhoto from '../../assets/images/team/executive/Team Captain_CesarRomero.jpg';
+import samidVillafuertePhoto from '../../assets/images/team/executive/Team Leader_Samid_Villafuerte.png'
+
+//software
+import manuelPalletePhoto from '../../assets/images/team/software/Manuel_Pallete.jpeg';
+import annaLuciaChongPhoto from '../../assets/images/team/software/Annalucía-Chong.jpeg';
+
+const teamAreas = [
   {
-    name: "Team Leader",
-    role: "Líder del Proyecto",
-    description: "Coordina todas las actividades del equipo y gestiona las relaciones con sponsors.",
-    avatar: "👨‍🔧"
+    areaName: "Executive",
+    members: [
+      { name: "Miryam Mateo", photo: miryamMateoPhoto },
+      { name: "Alvaro Carrasco", photo: alvaroCarrascoPhoto },
+      { name: "Nayeli Muñoz", photo: nayeliMunozPhoto },
+      { name: "Xiomara Choque", photo: xiomaraChoquePhoto },
+      { name: "Andrea Shocush", photo: andreaShocushPhoto },
+      { name: "Manuel Pallete", photo: manuelPalletePhoto },
+      { name: "Cesar Romero", photo: cesarRomeroPhoto },
+      { name: "Samid Villafuerte", photo: samidVillafuertePhoto },
+    ]
   },
   {
-    name: "Powertrain Engineer",
-    role: "Ingeniera de Propulsión",
-    description: "Diseña y optimiza el sistema de propulsión eléctrica del vehículo.",
-    avatar: "👩‍💻"
+    areaName: "Software",
+    members: [
+      { name: "Annalucía Chong", photo: annaLuciaChongPhoto },
+      { name: "Manuel Pallete", photo: manuelPalletePhoto },
+    ]
   },
-  {
-    name: "Chassis Engineer",
-    role: "Ingeniero de Chasis",
-    description: "Responsable del diseño estructural y la seguridad del vehículo.",
-    avatar: "👨‍🔬"
-  },
-  {
-    name: "Aerodynamics Engineer",
-    role: "Ingeniera Aerodinámica",
-    description: "Optimiza el flujo de aire y la eficiencia aerodinámica del vehículo.",
-    avatar: "👩‍🎨"
-  }
 ];
+
+// Función para agrupar miembros en "slides"
+const CARDS_PER_SLIDE = 4; // Ajustado a 4 para un look más compacto. ¡Puedes cambiarlo!
+
+function chunk(array, size) {
+  if (!array) return [];
+  const firstChunk = array.slice(0, size);
+  if (!firstChunk.length) {
+    return array.slice(size);
+  }
+  return [firstChunk].concat(chunk(array.slice(size), size));
+}
 ---
 
 <section id="equipo" class="section section-alt">
   <div class="container">
     <div class="section-header">
       <h2 class="section-title">Nuestro Equipo</h2>
-      <p class="section-subtitle">Estudiantes apasionados por la innovación</p>
+      <p class="section-subtitle">Conoce a los estudiantes que hacen posible este proyecto.</p>
     </div>
-    <div class="team-content">
-      <div class="team-grid">
-        {teamMembers.map(member => (
-          <div class="team-card">
-            <div class="member-photo">{member.avatar}</div>
-            <h3>{member.name}</h3>
-            <p class="member-role">{member.role}</p>
-            <p class="member-description">{member.description}</p>
+
+    <div class="team-areas-container">
+      {teamAreas.map(area => {
+        const memberChunks = chunk(area.members, CARDS_PER_SLIDE);
+        return (
+          <div class="area-container">
+            <h3 class="area-title">{area.areaName}</h3>
+            {area.members.length > CARDS_PER_SLIDE ? (
+              <div class="team-carousel-container">
+                <div class="carousel-viewport">
+                  <div class="carousel-track">
+                    {memberChunks.map(chunk => (
+                      <div class="carousel-slide">
+                        <div class="team-grid">
+                          {chunk.map(member => (
+                            <div class="team-card">
+                              <div class="member-photo-container">
+                                {/* 4. Usa el componente <Image> para renderizar la foto */}
+                                <Image
+                                  src={member.photo}
+                                  alt={`Foto de ${member.name}`}
+                                  width={100}
+                                  height={100}
+                                  format="webp"
+                                  quality={80}
+                                  class="member-photo-img"
+                                />
+                              </div>
+                              <h4>{member.name}</h4>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <button class="carousel-button prev" aria-label="Anterior">‹</button>
+                <button class="carousel-button next" aria-label="Siguiente">›</button>
+                <div class="carousel-dots"></div>
+              </div>
+            ) : (
+              <div class="team-grid static">
+                {area.members.map(member => (
+                  <div class="team-card">
+                    <div class="member-photo-container">
+                      <Image
+                        src={member.photo}
+                        alt={`Foto de ${member.name}`}
+                        width={100}
+                        height={100}
+                        format="webp"
+                        quality={80}
+                        class="member-photo-img"
+                      />
+                    </div>
+                    <h4>{member.name}</h4>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        ))}
-      </div>
+        )
+      })}
     </div>
   </div>
 </section>
 
 <style>
-  .team-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
-    margin-top: 3rem;
+  /* --- Estructura Principal --- */
+  .team-areas-container { display: flex; flex-direction: column; gap: 4rem; margin-top: 3rem; }
+  .area-title { text-align: center; color: var(--primary-color); margin-bottom: 2rem; font-size: 1.8rem; position: relative; padding-bottom: 1rem; }
+  .area-title::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 60px; height: 3px; background-color: var(--primary-color); border-radius: 2px; }
+
+  /* --- Estilos del Carrusel --- */
+  .team-carousel-container { position: relative; width: 100%; }
+  .carousel-viewport { overflow: hidden; width: 100%; }
+  .carousel-track { display: flex; transition: transform 0.5s ease-in-out; }
+  .carousel-slide { flex: 0 0 100%; min-width: 100%; padding: 0 0.5rem; }
+  .carousel-button { position: absolute; top: 50%; transform: translateY(-50%); background-color: var(--white); border: 2px solid var(--accent-color); color: var(--primary-color); border-radius: 50%; width: 50px; height: 50px; font-size: 2rem; cursor: pointer; z-index: 10; transition: var(--transition); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow); }
+  .carousel-button:hover { background-color: var(--primary-color); color: var(--white); }
+  .carousel-button:disabled { opacity: 0.3; cursor: not-allowed; }
+  .carousel-button.prev { left: -25px; }
+  .carousel-button.next { right: -25px; }
+  .carousel-dots { display: flex; justify-content: center; gap: 0.75rem; margin-top: 2rem; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; background-color: var(--accent-color); border: none; cursor: pointer; transition: var(--transition); }
+  .dot.active { background-color: var(--primary-color); transform: scale(1.2); }
+
+  /* --- Estilos de Cuadrícula y Tarjetas --- */
+  .team-grid { display: grid; grid-template-columns: repeat(var(--cards-per-slide, 4), 1fr); gap: 1.5rem; }
+  .team-grid.static { justify-content: center; max-width: calc(250px * var(--cards-per-slide, 4)); margin: 0 auto; }
+  .team-card { background: var(--white); padding: 2rem 1rem; border-radius: var(--border-radius); text-align: center; transition: var(--transition); border: 1px solid var(--accent-color); display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+  .team-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+
+  .member-photo-container {
+    width: 100px; height: 100px; border-radius: 50%;
+    overflow: hidden; background: var(--accent-color);
+    border: 3px solid var(--white); box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: var(--transition); flex-shrink: 0;
+  }
+  .team-card:hover .member-photo-container {
+    transform: scale(1.1); box-shadow: 0 8px 25px rgba(1, 30, 84, 0.2);
   }
 
-  .team-card {
-    background: var(--white);
-    padding: 2.5rem 2rem;
-    border-radius: var(--border-radius);
-    text-align: center;
-    transition: var(--transition);
-    border: 1px solid var(--accent-color);
+  .member-photo-img {
+    width: 100%; height: 100%; object-fit: cover;
   }
 
-  .team-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-lg);
-  }
+  .team-card h4 { color: var(--text-dark); font-size: 1.1rem; font-weight: 600; margin: 0; }
 
-  .member-photo {
-    width: 80px;
-    height: 80px;
-    background: linear-gradient(135deg, var(--primary-color), #034a9a);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1.5rem;
-    color: var(--white);
-    font-size: 2rem;
-    transition: var(--transition);
-  }
-
-  .team-card:hover .member-photo {
-    transform: scale(1.1);
-    box-shadow: 0 8px 25px rgba(1, 30, 84, 0.2);
-  }
-
-  .team-card h3 {
-    color: var(--primary-color);
-    margin-bottom: 0.5rem;
-  }
-
-  .member-role {
-    color: var(--primary-color);
-    font-weight: 600;
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
-  }
-
-  .member-description {
-    font-size: 0.9rem;
-    line-height: 1.6;
-    color: var(--text-light);
-  }
-
-  @media screen and (max-width: 768px) {
-    .team-grid {
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-    }
-
-    .team-card {
-      padding: 2rem 1.5rem;
-    }
-
-    .member-photo {
-      width: 70px;
-      height: 70px;
-      font-size: 1.8rem;
-    }
-  }
+  /* --- Estilos Responsivos --- */
+  @media screen and (max-width: 992px) { .team-grid { --cards-per-slide: 3; } }
+  @media screen and (max-width: 768px) { .team-grid { --cards-per-slide: 2; } .carousel-button.prev { left: -10px; } .carousel-button.next { right: -10px; } }
+  @media screen and (max-width: 600px) { .team-grid { --cards-per-slide: 2; gap: 1rem; } .team-grid.static { grid-template-columns: 1fr 1fr; } .carousel-button { display: none; } .member-photo-container { width: 80px; height: 80px; } }
 </style>
+
+<script>
+  // El script del carrusel no necesita cambios.
+  function initializeCarousel(carouselContainer) {
+    const track = carouselContainer.querySelector('.carousel-track'); const slides = Array.from(track.children); const nextButton = carouselContainer.querySelector('.carousel-button.next'); const prevButton = carouselContainer.querySelector('.carousel-button.prev'); const dotsNav = carouselContainer.querySelector('.carousel-dots'); if (slides.length <= 1) { if (nextButton) nextButton.style.display = 'none'; if (prevButton) prevButton.style.display = 'none'; if (dotsNav) dotsNav.style.display = 'none'; return; } let slideWidth = slides[0].getBoundingClientRect().width; let currentIndex = 0; slides.forEach((_, index) => { const dot = document.createElement('button'); dot.classList.add('dot'); if (index === 0) dot.classList.add('active'); dot.addEventListener('click', () => moveToSlide(index)); dotsNav.appendChild(dot); }); const dots = Array.from(dotsNav.children); const updateUI = (targetIndex) => { dots.forEach((dot, index) => dot.classList.toggle('active', index === targetIndex)); prevButton.disabled = targetIndex === 0; nextButton.disabled = targetIndex === slides.length - 1; }; const moveToSlide = (targetIndex) => { track.style.transform = `translateX(-${slideWidth * targetIndex}px)`; currentIndex = targetIndex; updateUI(targetIndex); }; nextButton.addEventListener('click', () => { if (currentIndex < slides.length - 1) moveToSlide(currentIndex + 1); }); prevButton.addEventListener('click', () => { if (currentIndex > 0) moveToSlide(currentIndex - 1); }); window.addEventListener('resize', () => { slideWidth = slides[0].getBoundingClientRect().width; moveToSlide(currentIndex); }); updateUI(0);
+  }
+  document.addEventListener('DOMContentLoaded', () => { const allCarousels = document.querySelectorAll('.team-carousel-container'); allCarousels.forEach(carousel => { initializeCarousel(carousel); }); });
+</script>
